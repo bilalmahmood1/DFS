@@ -175,13 +175,20 @@ if st.button('Run Simulation'):
         df_final_result.columns = ["lineups", "Sim Players", "Expected Money"]
         df_final_result["Expected Money"] = df_final_result["Expected Money"] / number_sims
 
-        st.write("Ranked SIM Lineups")
+        df_final_result_downloads = df_final_result["Sim Players"].apply(lambda x: pd.Series(str(x).split(",")))
+        player_columns = ["Player " +  str(i + 1) for i in list(df_final_result_downloads.columns)]
+        df_final_result_downloads.columns = player_columns
 
-        st.write(df_final_result)
+        df_final_result_downloads["lineups"] = df_final_result["lineups"]
+        df_final_result_downloads["Expected Money"] = df_final_result["Expected Money"]
+
+
+        st.write("Ranked SIM Lineups")
+        st.write(df_final_result_downloads)
 
 
     ## Save the ranked simulation file
-    csv = convert_df(df_final_result)
+    csv = convert_df(df_final_result_downloads)
     st.download_button(
         label="Download Ranked Lineups",
         data=csv,
