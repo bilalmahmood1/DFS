@@ -8,6 +8,8 @@ from numpy.random import normal
 import base64
 
 
+## Set up seed for testing
+np.random.seed(1)
 
 ## Helper functions
 @st.cache
