@@ -8,7 +8,9 @@ from numpy.random import normal
 import base64
 
 
+
 ## Helper functions
+@st.cache
 def convert_df(df):
     """Encode the df into csv file for downloading purpose"""
     return df.to_csv(index = False).encode('utf-8')
@@ -186,15 +188,13 @@ if st.button('Run Simulation'):
         st.write("Ranked SIM Lineups")
         st.write(df_final_result_downloads)
 
-
-    ## Save the ranked simulation file
-    csv = convert_df(df_final_result_downloads)
-    st.download_button(
-        label="Download Ranked Lineups",
-        data=csv,
-        file_name='sim_rankings.csv',
-        mime='text/csv',
-    )
-
-
+        st.success('Successfully Simulated the Lineups')
+        ## Save the ranked simulation file
+        csv = convert_df(df_final_result_downloads)
+        st.download_button(
+            label="Download Ranked Lineups",
+            data=csv,
+            file_name='sim_rankings.csv',
+            mime='text/csv',
+        )
 
