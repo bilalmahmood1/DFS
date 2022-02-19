@@ -12,13 +12,6 @@ Requirements:
 ° Divide the money won by the number of duplications for the expected value
 * Sum all of the money won by each lineup across the 10,000 contest simulations
 * Rank every lineup highest to lowest expected value
-
 * Enable ability to download the ranked lineups in order. Each player in each lineup has to be in the format (numbers and names) per the lineup sheet uploaded
-<<<<<<< HEAD
 * Enable ability to manually normalize name differences between the two uploaded data sources
-=======
 * Enable ability to manually normalize name differences between the two uploaded data sources
-
-
-
->>>>>>> 9da2ad3c261dbc5e3428ee9b57b2dfd2eb339586

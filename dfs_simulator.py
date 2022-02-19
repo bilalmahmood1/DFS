@@ -1,3 +1,5 @@
+#### Main Program to RUN the simulation
+
 
 ## Set of libraries used
 import streamlit as st
@@ -9,8 +11,7 @@ import base64
 from fuzzywuzzy import fuzz
 
 ## Set up seed for testing
-np.random.seed(1)
-
+## np.random.seed(1)
 
 ## Helper functions
 @st.cache
@@ -30,6 +31,8 @@ st.set_page_config(
 
 
 def find_potential_matches(player_info_database, name, n = 5):
+    """Find close potential matches for the missing name"""
+    
     candidates = sorted([(fuzz.token_sort_ratio(key, name), key) for key in player_info_database], reverse = True)[:n]
     return [n[1] for n in candidates]
 
@@ -52,14 +55,10 @@ image = Image.open('images/logo.png')
 st.image(image, use_column_width = False, caption='Monte Carlo Simulation')
 
 
+
 ## Total lineups
-total_entries = st.sidebar.number_input('Contest Size', min_value = 1, step = 1, value =  2000)
+total_entries = st.sidebar.number_input('Contest Size', min_value = 1, step = 1, value =  1000000)
 st.write('Total Entries: ', total_entries)
-
-
-## Number of simulations
-number_sims = st.sidebar.number_input('Number of simulations', min_value = 1, max_value = 50000, step = 1, value =  2000)
-st.write('Total Simulations: ', number_sims)
 
 
 ## Number of simulations
@@ -72,8 +71,10 @@ display = st.sidebar.radio("Show intermediate results?",('No', 'Yes'))
 
 ## Upload files
 st.sidebar.header("Simulation Inputs")
+
 # Statistics
-uploaded_file_statistics = st.sidebar.file_uploader("Upload Player Statistics", type=["csv"])
+st.sidebar.subheader("Upload Player Statistics")
+uploaded_file_statistics = st.sidebar.file_uploader("Player Statistics", type=["csv"])
 if uploaded_file_statistics is not None:
     df_fd = pd.read_csv(uploaded_file_statistics)
     st.subheader("Player Statistics")
@@ -81,16 +82,18 @@ if uploaded_file_statistics is not None:
     st.write(df_fd)
 
 # Lineups 
-uploaded_file_lineups = st.sidebar.file_uploader("Upload Lineups", type=["csv"])
+st.sidebar.subheader("Upload Lineups")
+uploaded_file_lineups = st.sidebar.file_uploader("Lineups", type=["csv"])
 if uploaded_file_lineups is not None:
     df_crunch = pd.read_csv(uploaded_file_lineups)
-    
     st.subheader("Lineups")
     st.write("There are %d rows and %d columns in Lineups file" %(df_crunch.shape[0],df_crunch.shape[1]))
     st.write(df_crunch)
 
 # Payput
-uploaded_file_payouts = st.sidebar.file_uploader("Upload Payouts", type=["csv"])
+st.sidebar.subheader("Upload Payouts")
+uploaded_file_payouts = st.sidebar.file_uploader("Payouts", type=["csv"])
+
 if uploaded_file_payouts is not None:
     df_payouts = pd.read_csv(uploaded_file_payouts)
     st.subheader("Payout Structure")
@@ -98,7 +101,8 @@ if uploaded_file_payouts is not None:
     st.write(df_payouts) 
 
 # Names
-uploaded_file_payouts = st.sidebar.file_uploader("Upload Name Mappings", type=["csv"])
+st.sidebar.subheader("Upload Name Mappings")
+uploaded_file_payouts = st.sidebar.file_uploader("Name Mappings", type=["csv"])
 if uploaded_file_payouts is not None:
     df_names = pd.read_csv(uploaded_file_payouts)
     st.subheader("Name Mappings")
