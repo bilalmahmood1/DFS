@@ -52,6 +52,16 @@ image = Image.open('images/logo.png')
 st.image(image, use_column_width = False, caption='Monte Carlo Simulation')
 
 
+## Total lineups
+total_entries = st.sidebar.number_input('Contest Size', min_value = 1, step = 1, value =  2000)
+st.write('Total Entries: ', total_entries)
+
+
+## Number of simulations
+number_sims = st.sidebar.number_input('Number of simulations', min_value = 1, max_value = 50000, step = 1, value =  2000)
+st.write('Total Simulations: ', number_sims)
+
+
 ## Number of simulations
 number_sims = st.sidebar.number_input('Number of simulations', min_value = 1, max_value = 50000, step = 1, value =  2000)
 st.write('Total Simulations: ', number_sims)
@@ -74,10 +84,7 @@ if uploaded_file_statistics is not None:
 uploaded_file_lineups = st.sidebar.file_uploader("Upload Lineups", type=["csv"])
 if uploaded_file_lineups is not None:
     df_crunch = pd.read_csv(uploaded_file_lineups)
-    ## Total lineups
-    total_entries = df_crunch.shape[0]
-    st.write('Total Entries: ', total_entries)
-
+    
     st.subheader("Lineups")
     st.write("There are %d rows and %d columns in Lineups file" %(df_crunch.shape[0],df_crunch.shape[1]))
     st.write(df_crunch)
