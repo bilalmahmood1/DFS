@@ -9,7 +9,7 @@ import base64
 from fuzzywuzzy import fuzz
 
 ## Set up seed for testing
-## np.random.seed(1)
+np.random.seed(1)
 
 
 ## Helper functions
