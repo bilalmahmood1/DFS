@@ -11,7 +11,7 @@ import base64
 from fuzzywuzzy import fuzz
 
 ## Set up seed for testing
-## np.random.seed(1)
+np.random.seed(1)
 
 ## Helper functions
 @st.cache
@@ -183,7 +183,7 @@ if st.button('Run Simulation'):
 
 
 
-    ## Payput dictionary
+    ## Payout dictionary
     pay_out = dict(zip(df_payouts.iloc[:,0], df_payouts.iloc[:,1]))
 
 
@@ -234,7 +234,30 @@ if st.button('Run Simulation'):
         for c in df_sims_ranks.columns:
             df_price_money[c] = df_sims_ranks[c].apply(lambda x: (pay_out[x]) ) 
 
-        ## Divide the prize money by duplication
+
+        ## No prize money division 
+        df_final_result_2 = df_price_money.sum(axis = 1)
+        df_final_result_2 = df_final_result_2.sort_values(ascending=False)
+
+        sims_lineups = [i + 1 for i in list(df_final_result_2.index)]
+        score_lineups = list(df_final_result_2.values)
+
+        final_result_2 = []
+        for i, lineup in enumerate(sims_lineups):
+            final_result_2.append((lineup, ",".join(lineups_database[lineup - 1]["players"]), score_lineups[i]))
+
+        df_final_result_2 = pd.DataFrame(final_result_2)
+        df_final_result_2.columns = ["lineups", "Sim Players", "Expected Money"]
+        df_final_result_2["Expected Money"] = df_final_result_2["Expected Money"] / number_sims
+        df_final_result_downloads_2 = df_final_result_2["Sim Players"].apply(lambda x: pd.Series(str(x).split(",")))
+        player_columns = ["Player " +  str(i + 1) for i in list(df_final_result_downloads_2.columns)]
+        df_final_result_downloads_2.columns = player_columns
+        df_final_result_downloads_2["lineups"] = df_final_result_2["lineups"]
+        df_final_result_downloads_2["Expected Money"] = df_final_result_2["Expected Money"]
+
+
+
+        ## Divide the prize money by duplication 
         df_final_result = df_price_money.sum(axis = 1) / df_duplications["duplication"]
         df_final_result = df_final_result.sort_values(ascending=False)
 
@@ -258,16 +281,28 @@ if st.button('Run Simulation'):
 
 
         if display == "Yes":
-            st.subheader("Ranked SIM Lineups")
+            st.subheader("Ranked SIM Lineups by ownership")
             st.write(df_final_result_downloads)
+            st.subheader("Ranked SIM Lineups without ownership")
+            st.write(df_final_result_downloads_2)
+            
 
-        st.success('Successfully Ranked the Prize/duplication Lineups')
-        ## Save the ranked simulation file
-        csv = convert_df(df_final_result_downloads)
+        st.success('Successfully Ranked Prize and Prize/duplication Lineups')
+       
+        ## Save the ranked simulation file with ownership
+        csv_1 = convert_df(df_final_result_downloads)
         st.download_button(
-            label="Download Ranked Lineups",
-            data=csv,
-            file_name='sim_rankings.csv',
+            label="Download Ranked Lineups with ownership",
+            data=csv_1,
+            file_name='sim_rankings_with_ownership.csv',
             mime='text/csv',
         )
 
+        ## Save the ranked simulation file without ownership
+        csv_2 = convert_df(df_final_result_downloads_2)
+        st.download_button(
+            label="Download Ranked Lineups without ownership",
+            data=csv_2,
+            file_name='sim_rankings_without_ownership.csv.csv',
+            mime='text/csv',
+        )
