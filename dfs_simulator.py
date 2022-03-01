@@ -65,6 +65,11 @@ st.write('Total Entries: ', total_entries)
 number_sims = st.sidebar.number_input('Number of simulations', min_value = 1, max_value = 50000, step = 1, value =  2000)
 st.write('Total Simulations: ', number_sims)
 
+
+## Display intermediate results
+ownership_flag = st.sidebar.radio("Consider Ownership?",('No', 'Yes'))
+
+
 ## Display intermediate results
 display = st.sidebar.radio("Show intermediate results?",('No', 'Yes'))
 
@@ -286,23 +291,23 @@ if st.button('Run Simulation'):
             st.subheader("Ranked SIM Lineups without ownership")
             st.write(df_final_result_downloads_2)
             
-
-        st.success('Successfully Ranked Prize and Prize/duplication Lineups')
-       
-        ## Save the ranked simulation file with ownership
-        csv_1 = convert_df(df_final_result_downloads)
-        st.download_button(
-            label="Download Ranked Lineups with ownership",
-            data=csv_1,
-            file_name='sim_rankings_with_ownership.csv',
-            mime='text/csv',
-        )
-
-        ## Save the ranked simulation file without ownership
-        csv_2 = convert_df(df_final_result_downloads_2)
-        st.download_button(
-            label="Download Ranked Lineups without ownership",
-            data=csv_2,
-            file_name='sim_rankings_without_ownership.csv.csv',
-            mime='text/csv',
-        )
+        st.success('Successfully Ranked the Lineups')       
+        if ownership_flag == "Yes":
+                   
+            ## Save the ranked simulation file with ownership
+            csv_1 = convert_df(df_final_result_downloads)
+            st.download_button(
+                label="Download Ranked Lineups with ownership",
+                data=csv_1,
+                file_name='sim_rankings_with_ownership.csv',
+                mime='text/csv',
+            )
+        else:   
+            ## Save the ranked simulation file without ownership
+            csv_2 = convert_df(df_final_result_downloads_2)
+            st.download_button(
+                label="Download Ranked Lineups without ownership",
+                data=csv_2,
+                file_name='sim_rankings_without_ownership.csv.csv',
+                mime='text/csv',
+            )
