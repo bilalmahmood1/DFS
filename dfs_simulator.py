@@ -11,7 +11,7 @@ import base64
 from fuzzywuzzy import fuzz
 
 ## Set up seed for testing
-np.random.seed(1)
+## np.random.seed(1)
 
 ## Helper functions
 @st.cache
@@ -57,16 +57,16 @@ st.image(image, use_column_width = False, caption='Monte Carlo Simulation')
 
 
 ## Total lineups
-total_entries = st.sidebar.number_input('Contest Size', min_value = 1, step = 1, value =  1000000)
+total_entries = st.sidebar.number_input('Contest Size', min_value = 1, step = 1, value =  2000)
 st.write('Total Entries: ', total_entries)
 
 
 ## Number of simulations
-number_sims = st.sidebar.number_input('Number of simulations', min_value = 1, max_value = 50000, step = 1, value =  2000)
+number_sims = st.sidebar.number_input('Number of simulations', min_value = 1, max_value = 50000, step = 1, value =  10000)
 st.write('Total Simulations: ', number_sims)
 
 
-## Display intermediate results
+## Display ownership_flag
 ownership_flag = st.sidebar.radio("Consider Ownership?",('No', 'Yes'))
 
 
@@ -136,7 +136,6 @@ if st.button('Run Simulation'):
         data = {"lineup": lineup_number, "player_names": lineup_names, "players": players}
         lineups_database.append(data)
         lineup_number = lineup_number + 1 
-
 
     ## Resolve name mismatching
     lineup_players = find_players_lineups(lineups_database)
@@ -271,10 +270,10 @@ if st.button('Run Simulation'):
 
         final_result = []
         for i, lineup in enumerate(sims_lineups):
-            final_result.append((lineup, ",".join(lineups_database[lineup - 1]["players"]), score_lineups[i]))
+            final_result.append((lineup, ",".join(lineups_database[lineup - 1]["players"]), lineups_database[lineup - 1]["duplication"], score_lineups[i]))
 
         df_final_result = pd.DataFrame(final_result)
-        df_final_result.columns = ["lineups", "Sim Players", "Expected Money"]
+        df_final_result.columns = ["lineups", "Sim Players", "duplication", "Expected Money"]
         df_final_result["Expected Money"] = df_final_result["Expected Money"] / number_sims
 
         df_final_result_downloads = df_final_result["Sim Players"].apply(lambda x: pd.Series(str(x).split(",")))
@@ -282,6 +281,7 @@ if st.button('Run Simulation'):
         df_final_result_downloads.columns = player_columns
 
         df_final_result_downloads["lineups"] = df_final_result["lineups"]
+        df_final_result_downloads["duplication"] = df_final_result["duplication"]
         df_final_result_downloads["Expected Money"] = df_final_result["Expected Money"]
 
 
