@@ -171,8 +171,13 @@ if st.button('Run Simulation'):
     total_ownerhip = np.sum([i["prod_ownership"] for i in lineups_database])
     for i in range(len(lineups_database)):
         lineups_database[i]["norm_prod_ownership"] =  lineups_database[i]["prod_ownership"] / total_ownerhip
-        lineups_database[i]["duplication"] = lineups_database[i]["norm_prod_ownership"] * total_entries
+        duplication = lineups_database[i]["norm_prod_ownership"] * total_entries
 
+        ## Setting small duplication less than 1 to 1
+        if duplication < 1:
+            lineups_database[i]["duplication"] = 1
+        else:
+            lineups_database[i]["duplication"] = lineups_database[i]["norm_prod_ownership"] * total_entries
 
     ## Create lineup statistics database
     df_result = pd.DataFrame()
