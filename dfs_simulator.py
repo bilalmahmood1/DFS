@@ -74,6 +74,10 @@ ownership_flag = st.sidebar.radio("Consider Ownership?",('No', 'Yes'))
 display = st.sidebar.radio("Show intermediate results?",('No', 'Yes'))
 
 
+## Display different sources
+source = st.sidebar.radio("Select Data Source?",('FD', 'DK'))
+
+
 ## Upload files
 st.sidebar.header("Simulation Inputs")
 
@@ -127,15 +131,33 @@ if st.button('Run Simulation'):
         
     df_players = pd.DataFrame(player_info_database).T
 
+
+
+    ## Accessing lineups depending on the Source
     ## Creating lineup statistics
-    lineups_database = []
-    lineup_number = 1
-    for lineup in df_crunch.iterrows():
-        players = list(lineup[1].values)
-        lineup_names = list(lineup[1].apply(lambda x: x.split(":")[1].lower()).values)
-        data = {"lineup": lineup_number, "player_names": lineup_names, "players": players}
-        lineups_database.append(data)
-        lineup_number = lineup_number + 1 
+    
+    if source == "FD":    
+        lineups_database = []
+        lineup_number = 1
+        for lineup in df_crunch.iterrows():
+            players = list(lineup[1].values)
+            lineup_names = list(lineup[1].apply(lambda x: x.split(":")[1].lower()).values)
+            data = {"lineup": lineup_number, "player_names": lineup_names, "players": players}
+            lineups_database.append(data)
+            lineup_number = lineup_number + 1 
+
+    else:
+        lineups_database = []
+        lineup_number = 1
+        for lineup in df_crunch.iterrows():
+            players = list(lineup[1].values)
+            lineup_names = list(lineup[1].apply(lambda x: x.split("(")[0].lower().strip()).values)
+            data = {"lineup": lineup_number, "player_names": lineup_names, "players": players}
+            lineups_database.append(data)
+            lineup_number = lineup_number + 1 
+
+
+
 
     ## Resolve name mismatching
     lineup_players = find_players_lineups(lineups_database)
